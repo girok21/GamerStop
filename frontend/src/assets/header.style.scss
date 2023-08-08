@@ -1,0 +1,54 @@
+.brand-container{
+    display: flexbox;
+    flex-direction: row;
+}
+
+.brand-partner-link{
+    max-width: fit-content;
+    padding-right: 0;
+}
+
+.brand-navigation-bar{
+    height: 50px;
+    font-size: 12px;
+    background-color: rgb(32,33,35);
+    color: white;
+    text-decoration: none;
+}
+
+.brand-partner-name{
+    height: 18px;
+    text-decoration: none;
+    color: white;
+    font-size: 12px;
+    font-weight: 200;
+}
+
+.brand-navbar-text{
+    max-width: fit-content;
+    margin-right: 5px;
+    border-right: 1px solid black;
+    border-color: white;
+}
+
+.partner-brand-logo{
+    max-height: 17px;
+    padding-right: 5px;
+}
+
+.navigation-bar{
+    background: rgb(30, 30, 56);
+    height: 90px;
+    // position: absolute;
+    width: 100%;
+    // background: transparent;
+}
+
+.brand-name{
+    font-size: 30px;
+}
+
+.nav-bar-icon{
+    max-width: 20;
+    max-height: 20;
+}
