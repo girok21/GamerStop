@@ -1,6 +1,7 @@
-import {Navbar, Nav, Container, Form, Col, Row } from 'react-bootstrap';
+import {Navbar, Nav, Container, Form, Col, Row, Badge } from 'react-bootstrap';
 import { FaShoppingCart, FaUser, FaSearch } from 'react-icons/fa';
-import {LinkContainer} from 'react-router-bootstrap'
+import {LinkContainer} from 'react-router-bootstrap';
+import { useSelector } from 'react-redux';
 import '../assets/header.style.scss'
 import hyperxLogo from '../assets/logo/hyperx-logo.svg'
 import logitechLogo from '../assets/logo/logitech-logo.svg'
@@ -8,6 +9,8 @@ import steamLogo from '../assets/logo/steam-logo.svg'
 import razerLogo from '../assets/logo/razer-logo.svg';
 
 const Header = ()=>{
+    const { cartItems } = useSelector((state) => state.cart);
+    console.log(cartItems);
     return(
         <header>
             <Navbar className='brand-navigation-bar' variant="dark" expand="md" collapseOnSelect>
@@ -49,7 +52,7 @@ const Header = ()=>{
                         <Nav className = "ms-auto">
                             {/* <Form.Control type='text' placeholder='SEARCH' /> */}
                             <LinkContainer className='nav-bar-icon' to="/cart">
-                                <Nav.Link ><FaShoppingCart/></Nav.Link>
+                                <Nav.Link ><FaShoppingCart/>{cartItems.length>0 && <Badge bg='danger' pill style={{marginLeft:'5px'}}>{cartItems.length}</Badge>}</Nav.Link>
                             </LinkContainer>
                             <LinkContainer className='nav-bar-icon' to='/login'>
                                 <Nav.Link><FaUser/></Nav.Link>

@@ -6,8 +6,8 @@ import Banner2 from '../assets/images/home-banner-new-de.jpg'
 
 const HomeScreenBanner = () => {
   return (
-    <Carousel className='HomeScreenBanner' >
-        <Carousel.Item className='banner-item' interval={2000}>
+    <Carousel className='HomeScreenBanner' fade interval={5000}>
+        <Carousel.Item className='banner-item' >
             {/* <img src={Banner1} alt="First Banner" /> */}
             <Image src={Banner1} alt="First Banner"/>
             <Carousel.Caption className='banner-caption'>
@@ -16,7 +16,7 @@ const HomeScreenBanner = () => {
                 <Button>shop now</Button>
             </Carousel.Caption>         
         </Carousel.Item>
-        <Carousel.Item className='banner-item' interval={2000}>
+        <Carousel.Item className='banner-item' >
             {/* <img src={Banner1} alt="First Banner" /> */}
             <Image src={Banner2} alt="First Banner"/>
             <Carousel.Caption className='banner-caption'>
