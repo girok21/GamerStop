@@ -37,7 +37,7 @@ const ProductScreen = () => {
             <Message variant='danger'>
                 { error?.data?.message || error.error}
             </Message>) : (
-                    <Row>
+                    <Row style={{maxWidth: '100%'}}>
                     <Col md={5}>
                         <Image src={product.image} alt={product.name} fluid />
                     </Col>
@@ -63,13 +63,13 @@ const ProductScreen = () => {
                                 <ListGroup.Item>
                                     <Row>
                                         <Col>Price:</Col>
-                                        <Col><stron>${product.price}</stron></Col>
+                                        <Col><strong>${product.price}</strong></Col>
                                     </Row>
                                 </ListGroup.Item>
                                 <ListGroup.Item>
                                     <Row>
                                         <Col>Status:</Col>
-                                        <Col><stron>{product.countInStock > 0 ? 'In stock' : 'Out of stock'}</stron></Col>
+                                        <Col><strong>{product.countInStock > 0 ? 'In stock' : 'Out of stock'}</strong></Col>
                                     </Row>
                                 </ListGroup.Item>
 

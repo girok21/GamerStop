@@ -1,16 +1,37 @@
-import {Navbar, Nav, Container, Form, Col, Row, Badge } from 'react-bootstrap';
+import {useNavigate} from 'react-router-dom';
+import {Navbar, Nav, Container, Button,  Form, Col, Row, Badge, NavDropdown, NavItem } from 'react-bootstrap';
 import { FaShoppingCart, FaUser, FaSearch } from 'react-icons/fa';
 import {LinkContainer} from 'react-router-bootstrap';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import '../assets/header.style.scss'
 import hyperxLogo from '../assets/logo/hyperx-logo.svg'
 import logitechLogo from '../assets/logo/logitech-logo.svg'
 import steamLogo from '../assets/logo/steam-logo.svg'
 import razerLogo from '../assets/logo/razer-logo.svg';
+import {logout} from '../slices/authSlice';
+import { useLogoutMutation } from '../slices/usersApiSlice';
 
 const Header = ()=>{
     const { cartItems } = useSelector((state) => state.cart);
-    console.log(cartItems);
+    const { userInfo } = useSelector((state) => state.auth);
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const [logoutApiCall] = useLogoutMutation();
+
+    const logoutHandler = async()=>{
+        try {
+            await logoutApiCall().unwrap();
+            dispatch(logout());
+            navigate('/login');
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    const searchIconHandler = ()=>{
+        console.log('search bar clicked');
+    }
     return(
         <header>
             <Navbar className='brand-navigation-bar' variant="dark" expand="md" collapseOnSelect>
@@ -42,7 +63,7 @@ const Header = ()=>{
                     </Container>
                 </Container>
             </Navbar>
-            <Navbar className='navigation-bar' variant="dark" expand="md" collapseOnSelect>
+            <Navbar className='navigation-bar' variant="dark" expand="md" collapseOnSelect >
                 <Container>
                     <LinkContainer to="/">
                         <Navbar.Brand className='brand-name'>GamerStop</Navbar.Brand>
@@ -50,13 +71,28 @@ const Header = ()=>{
                     <Navbar.Toggle aria-controls='basic-navbar-nav' />
                     <Navbar.Collapse id='basic-navbar-nav'>
                         <Nav className = "ms-auto">
-                            {/* <Form.Control type='text' placeholder='SEARCH' /> */}
-                            <LinkContainer className='nav-bar-icon' to="/cart">
+                            <Button className='search-icon' 
+                                    style={{backgroundColor:'transparent', border: 0 }} 
+                                    onClick={searchIconHandler}>
+                                <FaSearch/>
+                            </Button>
+                            <LinkContainer to="/cart">
                                 <Nav.Link ><FaShoppingCart/>{cartItems.length>0 && <Badge bg='danger' pill style={{marginLeft:'5px'}}>{cartItems.length}</Badge>}</Nav.Link>
                             </LinkContainer>
-                            <LinkContainer className='nav-bar-icon' to='/login'>
-                                <Nav.Link><FaUser/></Nav.Link>
+                            { userInfo ? (
+                                <NavDropdown title={userInfo.name} id='username'>
+                                    <LinkContainer to='/profile'>
+                                        <NavDropdown.Item>Profile</NavDropdown.Item>
+                                    </LinkContainer>
+                                    <NavDropdown.Item onClick={logoutHandler}>
+                                        LogOut
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                            ) : (
+                                <LinkContainer  to='/login'>
+                                <Nav.Link><FaUser className='nav-bar-icon'/></Nav.Link>
                             </LinkContainer>
+                            )}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

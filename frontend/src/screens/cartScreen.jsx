@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, ListGroup, Image, Form, Button, Card, ListGroupItem } from 'react-bootstrap';
 import { FaTrash } from 'react-icons/fa';
 import Message from '../components/Message';
-import { useState } from 'react';
 import {addToCart, removeFromCart} from '../slices/cartSlice'
 
 
@@ -15,20 +14,19 @@ const CartScreen = () => {
     const { cartItems } = cart;
     const totalItems = cartItems.reduce((accumulator, cartItem) => accumulator + cartItem.qty , 0);
     const totalPrice = cartItems.reduce((accumulator, cartItem) => accumulator + cartItem.qty*cartItem.price, 0);
-    console.log( cartItems);
     // const [qty, setQty] = useState(1);
-    const itemQtyChangeHandler = async(item, qty) => {
+    const itemQtyChangeHandler = (item, qty) => {
         // setQty(Number(newQty));
         dispatch(addToCart({...item, qty}));
     }
-    const removeFromCartHandler = async(id) => {
+    const removeFromCartHandler = (id) => {
         dispatch(removeFromCart(id));
     }
     const checkOutHandler = ()=>{
-        navigate('/login?redirect=/shipping')
+        navigate('/login?redirect=/shipping');
     }
 
-    return <Row>
+    return <Row style={{maxWidth: '100%', margin:0}}>
         <Col md={8}>
             <h1 style={{ marginBottom: '20px' }}>Shopping Cart</h1>
             {cartItems.length === 0 ?(
@@ -71,7 +69,7 @@ const CartScreen = () => {
                     <h4>{`Total: $(${totalPrice})`}</h4>
                 </ListGroup.Item>
                 <ListGroupItem>
-                    <Button type='button' className='btn-block' disabled={cartItems.length === 0} onClick={() => checkOutHandler}>
+                    <Button type='button' className='btn-block' disabled={cartItems.length === 0} onClick={checkOutHandler}>
                         Proceed to Checkout
                     </Button>
                 </ListGroupItem>

@@ -19,9 +19,9 @@ const HomeScreen = () => {
         <>
           <HomeScreenBanner />
           <h1>Latest Products</h1>
-          <Row>
+          <Row style={{maxWidth: '100%'}}>
             {products.map(product => (
-              <Col key={product.id} xs={12} sm={6} md={4} lg={3}>
+              <Col key={product._id} xs={12} sm={6} md={4} lg={3}>
                 <Product product={product} />
               </Col>
             ))}
