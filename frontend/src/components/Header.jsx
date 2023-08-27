@@ -10,6 +10,9 @@ import steamLogo from '../assets/logo/steam-logo.svg'
 import razerLogo from '../assets/logo/razer-logo.svg';
 import {logout} from '../slices/authSlice';
 import { useLogoutMutation } from '../slices/usersApiSlice';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { debounce } from '../utils/animationHelpers.js';
 
 const Header = ()=>{
     const { cartItems } = useSelector((state) => state.cart);
@@ -19,6 +22,74 @@ const Header = ()=>{
     const navigate = useNavigate();
 
     const [logoutApiCall] = useLogoutMutation();
+    const [isNavBarOverlap, setIsNavBarOverLap] = useState(true);
+
+    let location = useLocation();
+    // const navBarOverLapPaths = [''];//list of all routes where Navigation Bar is going to overlap(background transparent)
+
+    useEffect(()=>{
+        if(location.pathname === '/'){ //home page
+            setIsNavBarOverLap(true);
+        }else{
+            setIsNavBarOverLap(false);
+        }
+    }, [location]);
+//navbar stuffs here----------------------------------------------------------------
+    const [hideNavBar, setHideNavBar] = useState(false);
+    const [isNavBarSticky, setIsNavBarSticky] = useState(false);
+    const [isScrollDown, setIsScrollDown] = useState(false);
+
+    const [currScrollPos, setCurrScrollPos] = useState(0);
+useEffect(() => {
+        let currentScrollPosition = 0;
+
+        window.addEventListener('scroll', function (e) {
+
+        // Get the new Value
+        currentScrollPosition = window.pageYOffset;
+
+        if(currScrollPos - currentScrollPosition < 0){
+            setIsScrollDown(true);
+        }else{
+            setIsScrollDown(false);
+        }
+
+        if (isScrollDown ) {
+            if(currScrollPos > 90)
+                setHideNavBar(true);
+        } else {
+            setHideNavBar(false);
+        }
+        setCurrScrollPos(currentScrollPosition);
+
+        // if(currentScrollPosition > 140)
+        // {
+        //     setIsNavBarSticky(true);
+        // }else{
+        //     setIsNavBarSticky(false);
+        // }
+        if(!isScrollDown && currScrollPos>=90){
+            setIsNavBarSticky(true);
+        }else if(currScrollPos > 140){
+            setIsNavBarSticky(true);
+        }else{
+            setIsNavBarSticky(false);
+        }
+        });
+    }, [currScrollPos, hideNavBar, isScrollDown]);
+
+    const styles = {
+        active: {
+          visibility: "visible",
+          transition: "all 0.5s"
+        },
+        hidden: {
+          visibility: "hidden",
+          transition: "all 0.5s",
+          transform: "translateY(-100%)"
+        }
+      }
+//----------------------------------------------------------------
 
     const logoutHandler = async()=>{
         try {
@@ -34,7 +105,10 @@ const Header = ()=>{
     }
     return(
         <header>
-            <Navbar className='brand-navigation-bar' variant="dark" expand="md" collapseOnSelect>
+            <Navbar className='brand-navigation-bar' 
+                    variant="dark" expand="md" 
+                    collapseOnSelect 
+                    >
                 <Container className='brand-navigation-container'>
                     <Container className='brand-navbar-text'>BRAND PARTNERS</Container>
                     <Container className='brand-partners-container'>
@@ -63,7 +137,16 @@ const Header = ()=>{
                     </Container>
                 </Container>
             </Navbar>
-            <Navbar className='navigation-bar' variant="dark" expand="md" collapseOnSelect >
+            <Navbar className='navigation-bar' 
+                    variant="dark" expand="md" 
+                    collapseOnSelect
+                    // style={isNavBarOverlap ? {position: 'absolute' , background: 'transparent'} : {}}
+                    {...(isNavBarSticky ? {fixed:'top'}: {})}
+                    // hidden={hideNavBar}>
+                    // style={!hideNavBar ? styles.active: styles.hidden}
+                    style = {{...(isNavBarOverlap && !isNavBarSticky ? {position:'absolute', background: 'transparent'}: {}), 
+                              ...(!hideNavBar ? styles.active: styles.hidden)}}
+                    >
                 <Container>
                     <LinkContainer to="/">
                         <Navbar.Brand className='brand-name'>GamerStop</Navbar.Brand>

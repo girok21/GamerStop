@@ -1,12 +1,12 @@
 import React from 'react'
 import {Carousel, Image, Button} from 'react-bootstrap';
-import  Banner1 from '../assets/images/herman-miller-vantum-gaming-chair-hpb-desktop-1.jpg'
+import  Banner1 from '../assets/images/home-banner-gaming-simulator.jpg'
 import '../assets/HomeScreenBanner.style.scss';
 import Banner2 from '../assets/images/home-banner-new-de.jpg'
 
 const HomeScreenBanner = () => {
   return (
-    <Carousel className='HomeScreenBanner' fade interval={5000}>
+    <Carousel className='HomeScreenBanner' fade interval={10000}>
         <Carousel.Item className='banner-item' >
             {/* <img src={Banner1} alt="First Banner" /> */}
             <Image src={Banner1} alt="First Banner"/>

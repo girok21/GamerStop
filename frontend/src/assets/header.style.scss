@@ -39,9 +39,8 @@
 .navigation-bar{
     background: rgb(30, 30, 56);
     height: 90px;
-    // position: absolute;
     width: 100%;
-    // background: transparent;
+    transition-timing-function: ease-in-out;
 }
 
 .brand-name{
