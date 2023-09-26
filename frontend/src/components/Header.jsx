@@ -12,7 +12,11 @@ import {logout} from '../slices/authSlice';
 import { useLogoutMutation } from '../slices/usersApiSlice';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { debounce } from '../utils/animationHelpers.js';
+import SearchBox from '../components/SearchBox.jsx';
+import { GrClose } from "react-icons/gr";
+
+
+
 
 const Header = ()=>{
     const { cartItems } = useSelector((state) => state.cart);
@@ -24,22 +28,33 @@ const Header = ()=>{
     const [logoutApiCall] = useLogoutMutation();
     const [isNavBarOverlap, setIsNavBarOverLap] = useState(true);
 
+    const [hideNavBar, setHideNavBar] = useState(false);
+    const [isNavBarSticky, setIsNavBarSticky] = useState(false);
+    const [isScrollDown, setIsScrollDown] = useState(false);
+    const [showSearchBar, setShowSearchBar] = useState(false);  
+    const [currScrollPos, setCurrScrollPos] = useState(0);
+
     let location = useLocation();
     // const navBarOverLapPaths = [''];//list of all routes where Navigation Bar is going to overlap(background transparent)
 
     useEffect(()=>{
-        if(location.pathname === '/'){ //home page
+
+        console.log('here');
+        setHideNavBar(false);
+        setIsNavBarSticky(false);
+        setIsScrollDown(false);
+        setShowSearchBar(false);
+        setCurrScrollPos(0);
+
+        if(location.pathname === '/' || location.pathname.includes('collections')){ //home page
             setIsNavBarOverLap(true);
         }else{
             setIsNavBarOverLap(false);
         }
+        // console.log(isNavBarOverlap, isNavBarSticky, isScrollDown, showSearchBar, hideNavBar)
     }, [location]);
+    
 //navbar stuffs here----------------------------------------------------------------
-    const [hideNavBar, setHideNavBar] = useState(false);
-    const [isNavBarSticky, setIsNavBarSticky] = useState(false);
-    const [isScrollDown, setIsScrollDown] = useState(false);
-
-    const [currScrollPos, setCurrScrollPos] = useState(0);
 useEffect(() => {
         let currentScrollPosition = 0;
 
@@ -61,22 +76,15 @@ useEffect(() => {
             setHideNavBar(false);
         }
         setCurrScrollPos(currentScrollPosition);
-
-        // if(currentScrollPosition > 140)
-        // {
-        //     setIsNavBarSticky(true);
-        // }else{
-        //     setIsNavBarSticky(false);
-        // }
-        if(!isScrollDown && currScrollPos>=90){
+        if(isNavBarOverlap && !isScrollDown && currScrollPos>=90){
             setIsNavBarSticky(true);
-        }else if(currScrollPos > 140){
+        }else if(isNavBarOverlap && currScrollPos > 90){
             setIsNavBarSticky(true);
         }else{
             setIsNavBarSticky(false);
         }
         });
-    }, [currScrollPos, hideNavBar, isScrollDown]);
+    }, [currScrollPos, hideNavBar, isScrollDown,isNavBarOverlap]);
 
     const styles = {
         active: {
@@ -89,6 +97,7 @@ useEffect(() => {
           transform: "translateY(-100%)"
         }
       }
+
 //----------------------------------------------------------------
 
     const logoutHandler = async()=>{
@@ -100,13 +109,11 @@ useEffect(() => {
             console.log(err);
         }
     }
-    const searchIconHandler = ()=>{
-        console.log('search bar clicked');
-    }
+
     return(
         <header>
-            <Navbar className='brand-navigation-bar' 
-                    variant="dark" expand="md" 
+            {/* <Navbar className='brand-navigation-bar' 
+                    expand="md" 
                     collapseOnSelect 
                     >
                 <Container className='brand-navigation-container'>
@@ -136,7 +143,7 @@ useEffect(() => {
                         </Row>
                     </Container>
                 </Container>
-            </Navbar>
+            </Navbar> */}
             <Navbar className='navigation-bar' 
                     variant="dark" expand="md" 
                     collapseOnSelect
@@ -147,7 +154,21 @@ useEffect(() => {
                     style = {{...(isNavBarOverlap && !isNavBarSticky ? {position:'absolute', background: 'transparent'}: {}), 
                               ...(!hideNavBar ? styles.active: styles.hidden)}}
                     >
-                <Container>
+                {showSearchBar && 
+                    <div style={{display:'flex', width:'100vw',justifyContent:'center', background: 'white'}}>
+                        <SearchBox />
+                        <Button onClick={()=>setShowSearchBar(!showSearchBar)}
+                            style={{height:'90px', 
+                                    width:'150px', 
+                                    borderRadius:'0px', 
+                                    background:'transparent', 
+                                    border:'0px',
+                                    }}>
+                            <GrClose/>
+                        </Button>
+                    </div>}
+                {!showSearchBar && 
+                <Container>                    
                     <LinkContainer to="/">
                         <Navbar.Brand className='brand-name'>GamerStop</Navbar.Brand>
                     </LinkContainer>
@@ -156,17 +177,29 @@ useEffect(() => {
                         <Nav className = "ms-auto">
                             <Button className='search-icon' 
                                     style={{backgroundColor:'transparent', border: 0 }} 
-                                    onClick={searchIconHandler}>
+                                    onClick={()=>setShowSearchBar(!showSearchBar)}>
                                 <FaSearch/>
                             </Button>
                             <LinkContainer to="/cart">
-                                <Nav.Link ><FaShoppingCart/>{cartItems.length>0 && <Badge bg='danger' pill style={{marginLeft:'5px'}}>{cartItems.length}</Badge>}</Nav.Link>
+                                <Nav.Link ><FaShoppingCart/>{cartItems.length>0 && <Badge bg='danger' pill style={{marginLeft:'5px', padding:'0px'}}>{cartItems.length}</Badge>}</Nav.Link>
                             </LinkContainer>
                             { userInfo ? (
-                                <NavDropdown title={userInfo.name} id='username'>
+                                <NavDropdown title={userInfo.isAdmin? 'ADMIN':userInfo.name} id='username'>
                                     <LinkContainer to='/profile'>
                                         <NavDropdown.Item>Profile</NavDropdown.Item>
                                     </LinkContainer>
+                                    {userInfo.isAdmin && 
+                                        <LinkContainer to='/admin/orderlist'>
+                                            <NavDropdown.Item>Order List</NavDropdown.Item>
+                                    </LinkContainer>}
+                                    {userInfo.isAdmin && 
+                                        <LinkContainer to='/admin/userlist'>
+                                            <NavDropdown.Item>User List</NavDropdown.Item>
+                                    </LinkContainer>}
+                                    {userInfo.isAdmin && 
+                                        <LinkContainer to='/admin/productlist'>
+                                            <NavDropdown.Item>Product List</NavDropdown.Item>
+                                    </LinkContainer>}
                                     <NavDropdown.Item onClick={logoutHandler}>
                                         LogOut
                                     </NavDropdown.Item>
@@ -178,7 +211,7 @@ useEffect(() => {
                             )}
                         </Nav>
                     </Navbar.Collapse>
-                </Container>
+                </Container>}
             </Navbar>
         </header>
     )

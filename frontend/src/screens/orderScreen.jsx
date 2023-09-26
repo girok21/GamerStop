@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap';
+import { Row, Col, ListGroup, Image, Button, Card } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import Message from '../components/Message'
-import { useGetOrderDetailsQuery, usePayOrderMutation, useGetPayPalClientIdQuery } from '../slices/ordersApiSlice';
+import { useGetOrderDetailsQuery, usePayOrderMutation, useGetPayPalClientIdQuery, useDeliverOrderMutation } from '../slices/ordersApiSlice';
 import { PayPalButtons, usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
@@ -15,6 +15,7 @@ const OrderScreen = ()=> {
     const {data: order, refetch, isLoading, error} = useGetOrderDetailsQuery(orderId);
 
     const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
+    const [deliverOrder, { isLoading: loadingDeliverOrder }] = useDeliverOrderMutation();
     const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
     const {data: paypal, isLoading: loadingPayPal, error:errorPayPal } = useGetPayPalClientIdQuery();
     const {userInfo} = useSelector((state)=> state.auth);
@@ -40,6 +41,7 @@ const OrderScreen = ()=> {
         }
     },[errorPayPal, loadingPayPal, order, paypal, paypalDispatch]);
 
+    
     function onApprove(data, actions) {
         return actions.order.capture().then(async function (details) {
           try {
@@ -51,11 +53,11 @@ const OrderScreen = ()=> {
           }
         });
       }
-    async function onApproveTest(){
-        await payOrder({orderId, details : { payer: {}}});
-                refetch();
-                toast.success('Payment Successful');
-    }
+    // async function onApproveTest(){
+    //     await payOrder({orderId, details : { payer: {}}});
+    //             refetch();
+    //             toast.success('Payment Successful');
+    // }
     function onError(err){
         toast.error(err.message)
     }
@@ -73,12 +75,21 @@ const OrderScreen = ()=> {
           });
       }
 
+    const deliverOrderHandler = async ()=>{
+        try {
+            await deliverOrder(orderId);
+            refetch();
+            toast.success('Order delivered')
+        } catch (err) {
+            toast.error(err?.data?.message || err.message)
+        }
+    }
 
     return(
         isLoading ? <Loader /> : error ? <Message variant='danger'/>:
         (<>
-            <h1>Order {orderId}</h1>
-            <Row>
+            <h2>Order <strong>{orderId}</strong></h2>
+            <Row style={{maxWidth: '95%', margin:'auto'}}>
                 <Col md={8}>
                     <ListGroup variant='flush'>
                         <ListGroup.Item>
@@ -177,7 +188,17 @@ const OrderScreen = ()=> {
                                 )}
                             </ListGroup.Item>
                         )}
-                        {/* MARK AS DELIVERED PLACEHOLDER */}      
+                        { loadingDeliverOrder && <Loader />}
+                        { userInfo && userInfo.isAdmin && order.isPaid && 
+                        !order.isDelivered && (
+                            <ListGroup.Item>
+                                <Button
+                                    type='button'
+                                    className='btn btn-block'
+                                    onClick={deliverOrderHandler}
+                                >Mark As Delivered</Button>
+                            </ListGroup.Item>
+                        )}   
                     </Card>
                 </Col>
             </Row>

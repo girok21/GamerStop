@@ -37,10 +37,11 @@
 }
 
 .navigation-bar{
-    background: rgb(30, 30, 56);
+    background: #1c1c1c;
     height: 90px;
     width: 100%;
     transition-timing-function: ease-in-out;
+    z-index: 2;
 }
 
 .brand-name{

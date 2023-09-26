@@ -31,8 +31,12 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    image: {
+    type: {
         type: String,
+        default: ''
+    },
+    cardImage: {
+        type: [String],
         required: true,
     },
     description: {
@@ -49,6 +53,11 @@ const productSchema = new mongoose.Schema({
         required: true,
         default: 0,
     },
+    numReviews: {
+        type: Number,
+        required: true,
+        default: 0,
+    },
     price:{
         type: Number,
         required: true,
@@ -59,6 +68,26 @@ const productSchema = new mongoose.Schema({
         required: true,
         default: 0,
     },
+    colors: {
+        type: [String],
+    },
+    brand:{
+        type: String,
+        required: true,
+    },
+    images:{
+        type: [String],
+        required: true,
+    },
+    dimensions: {
+        type: mongoose.SchemaTypes.Mixed,
+    },
+    warranty: {
+        type: String,
+    },
+    technicalSpecification:{
+        type: mongoose.SchemaTypes.Mixed
+    }
 },{timestamps:true});
 
 const Product = mongoose.model("Product", productSchema);

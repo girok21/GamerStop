@@ -48,9 +48,8 @@ const ProfileScreen = () => {
             toast.error(err?.data?.message || err.error);
         }
     }
-    console.log(orders);
   return (
-    <Row>
+    <Row style={{width:'95%', margin:'auto', paddingTop:'30px'}}>
         <Col md={3}>
             <h2>User Profile</h2>
             <Form onSubmit={submitHandler}>

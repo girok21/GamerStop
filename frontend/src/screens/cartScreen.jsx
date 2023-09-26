@@ -26,33 +26,45 @@ const CartScreen = () => {
         navigate('/login?redirect=/shipping');
     }
 
-    return <Row style={{maxWidth: '100%', margin:0}}>
-        <Col md={8}>
-            <h1 style={{ marginBottom: '20px' }}>Shopping Cart</h1>
+    return <Row style={{
+                        maxWidth: '100%',
+                        margin:'0px',
+                        boxSizing: 'border-box',
+                        paddingLeft: '70px',
+                        paddingRight: '70px',
+                    }}>
+        <h1 style={{ marginBottom: '20px', marginLeft:'10%', fontWeight:'800', fontSize:'30px', textTransform:'uppercase' }}>My Cart</h1>
+        <Col md={7}>
+            
             {cartItems.length === 0 ?(
                 <Message>Your Cart is Empty<Link to = '/'>Go Back</Link></Message>
             ) : (
                 <ListGroup variant= 'flush'>
                     {cartItems.map((cartItem) =>(
-                        <ListGroupItem key = {cartItem._id}>
+                        <ListGroupItem key = {cartItem._id} style={{backgroundColor: 'transparent'}}>
                             <Row>
-                            <Col ><Image src={cartItem.image} alt={cartItem.name} fluid /></Col>
-                            <Col md={3}><Link to={`/product/${cartItem._id}`}>{cartItem.name}</Link></Col>
-                            <Col >${cartItem.price}</Col>
-                            <Col >
-                                <Form.Control
-                                        as='select'
-                                        value={cartItem.qty}
-                                        onChange={(e) => itemQtyChangeHandler(cartItem, Number(e.target.value))}>
-                                    {[...Array(cartItem.countInStock).keys()].map((x) => (
-                                        <option key = {x+1} value = {x+1}>
-                                            {x+1}
-                                        </option>
-                                    ))}
-                                </Form.Control>
-                            </Col>
-                            <Col >
-                                <Button type='button' variant='light' onClick={() => removeFromCartHandler(cartItem._id)}><FaTrash/></Button>
+                            <Col md={6} style={{display:'flex', justifyContent:'center'}}><Image src={cartItem.image} alt={cartItem.name} fluid /></Col>
+                            
+                            <Col md={6}>
+                                <Row><Link to={`/product/${cartItem._id}`}>{cartItem.name}</Link></Row>
+                                <Row style={{marginLeft:'1px'}}>${cartItem.price}</Row>
+                                <Row>
+                                    <Col >
+                                        <Form.Control
+                                                as='select'
+                                                value={cartItem.qty}
+                                                onChange={(e) => itemQtyChangeHandler(cartItem, Number(e.target.value))}>
+                                            {[...Array(cartItem.countInStock).keys()].map((x) => (
+                                                <option key = {x+1} value = {x+1}>
+                                                    {x+1}
+                                                </option>
+                                            ))}
+                                        </Form.Control>
+                                    </Col>
+                                    <Col >
+                                        <Button type='button' variant='light' onClick={() => removeFromCartHandler(cartItem._id)}><FaTrash/></Button>
+                                    </Col>                     
+                                </Row>
                             </Col>
                             </Row>
                         </ListGroupItem>
@@ -60,18 +72,35 @@ const CartScreen = () => {
                 </ListGroup>
             )}
         </Col>
-        <Col md = {4}>
-            <Card>
+        <Col md = {5}>
+            <Card 
+                style={{
+                        borderRadius: '0px', 
+                        maxWidth: '90%',
+                        width: 'fit-content', 
+                        height:'230px', 
+                        display: 'flex', 
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        boxSizing: 'border-box',
+                        paddingLeft: '30px',
+                        paddingRight: '30px',
+                    }}
+            >
                 <ListGroup.Item>
-                    <h2>{`Subtotal (${totalItems}) Items`}</h2>
-                </ListGroup.Item>
-                <ListGroup.Item>
-                    <h4>{`Total: $(${totalPrice})`}</h4>
+                    <span><h4 style={{display:'inline'}}>{`Subtotal (${totalItems}) : `}</h4><strong><h3 style={{display:'inline'}}>{`$(${totalPrice})`}</h3></strong></span>
                 </ListGroup.Item>
                 <ListGroupItem>
-                    <Button type='button' className='btn-block' disabled={cartItems.length === 0} onClick={checkOutHandler}>
+                    <Button type='button' className='blue-button' disabled={cartItems.length === 0} onClick={checkOutHandler} style={{fontSize:'14px', margin:'10px'}}>
                         Proceed to Checkout
                     </Button>
+                </ListGroupItem>
+                <ListGroupItem>
+                    <p style={{fontSize:'13px'}}>
+                    Shipping, taxes, and discounts calculated at checkout.
+                    Orders will be processed in USD.
+                    </p>
                 </ListGroupItem>
             </Card>
         </Col>

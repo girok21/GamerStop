@@ -1,12 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro&display=swap');
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Maven Pro', 'sans-serif';
+  background-color: #f4f4f4;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: 'Borel', cursive;
+.FaStar{
+  color: blue;
 }
+
+.blue-button{
+  border-radius: 0;
+  background-color: #00b8fc;
+  font-weight: 400;
+  color: black;
+  border-color: #00b8fc;
+  width: 300px;
+  text-transform: uppercase;
+}
+
+.blue-button:hover{
+  background-color: #00b8fc;
+  color: black;
+
+}
+
+a{
+  text-decoration: none;
+}
+
+/* footer{
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+} */
